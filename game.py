@@ -53,25 +53,22 @@ class Game():
         for employee in self.employees:
             if employee.order < 3:
                 employee.set_rectangle(
-                                      ((self.display_width-self.grid_size) / 2) + (employee.order * self.grid_increment),
+                                      (((self.display_width-self.grid_size) * 6)/ 7) + (employee.order * self.grid_increment),
                                       ((self.display_height-self.grid_size) / 2),
                                       self.grid_increment
                                       )
-                print('first',employee.name, ((self.display_width-self.grid_size) / 2) + (employee.order * self.grid_increment), ((self.display_height-self.grid_size) / 2), self.grid_increment)
             elif employee.order < 6:
                 employee.set_rectangle(
-                                      ((self.display_width-self.grid_size) / 2) + ((employee.order-3) * self.grid_increment),
+                                      (((self.display_width-self.grid_size) * 6)/ 7) + ((employee.order-3) * self.grid_increment),
                                       ((self.display_height-self.grid_size) / 2) + self.grid_increment,
                                       self.grid_increment
                                       )
-                print('sec',employee.name, ((self.display_width-self.grid_size) / 2) + ((employee.order-3) * self.grid_increment), ((self.display_height-self.grid_size) / 2), self.grid_increment)
             elif employee.order < 9:
                 employee.set_rectangle(
-                                      ((self.display_width-self.grid_size) / 2) + ((employee.order-6) * self.grid_increment),
+                                      (((self.display_width-self.grid_size) * 6)/ 7) + ((employee.order-6) * self.grid_increment),
                                       ((self.display_height-self.grid_size) / 2) + (2 * self.grid_increment),
                                       self.grid_increment
                                       )
-                print('third',employee.name, ((self.display_width-self.grid_size) / 2) + ((employee.order-6) * self.grid_increment), ((self.display_height-self.grid_size) / 2), self.grid_increment)
             else:
                 raise Exception('Error: Squares out of bounds')
 

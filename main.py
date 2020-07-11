@@ -32,9 +32,9 @@ pygame.mixer.music.load("./media/hollywood_squares.mp3")
 info = pygame.display.Info()
 display_width = math.ceil((info.current_w*4)/5)
 display_height = math.ceil((info.current_h*4)/5)
-title_width = math.ceil((info.current_w * 1)/2)
-title_height = math.ceil((info.current_h * 1)/2)
-grid_size = title_height
+title_width = math.ceil((info.current_w * 3)/4)
+title_height = math.ceil((info.current_h * 3)/4)
+grid_size = math.ceil((info.current_h * 1)/2)
 
 # Setup game object
 game = Game(display_width, display_height, grid_size)
@@ -58,9 +58,9 @@ pygame.display.set_caption('The Oswald Squares')
 # pygame.display.set_icon(grid)
 
 # Image manipulation
-picture = pygame.image.load('./media/hollywood_title.png')
-picture = pygame.transform.scale(picture, (title_width,title_height))
-grid = pygame.image.load('./media/grid.jpg')
+title = pygame.image.load('./media/hollywood_title.png')
+title = pygame.transform.scale(title, (title_width,title_height))
+grid = pygame.image.load('./media/hs_grid.png')
 grid = pygame.transform.scale(grid, (grid_size,grid_size))
 
 # Run start screen until the user asks to quit or start
@@ -75,7 +75,7 @@ while starting:
 
     # Start screen background and text
     game_display.fill(oswald_light_blue)
-    game_display.blit(picture,((display_width-title_width)/2,(display_height-title_height)/2))
+    game_display.blit(title,((display_width-title_width)/2,(display_height-title_height)/2))
 
     # Flip the display
     pygame.display.flip()
@@ -94,7 +94,8 @@ while running:
             if event.key == K_ESCAPE:
                 running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            game.in_square(pos)
+            if event.button == 1:
+                game.in_square(pos)
                 
 
         elif event.type == pygame.MOUSEMOTION:
@@ -114,13 +115,15 @@ while running:
     game_display.fill(oswald_light_blue)
 
     # If there's an active game
-    if not game.is_active():
+    if game.is_active():
         correct_button.draw(game_display)
         incorrect_button.draw(game_display)
-        game.draw_squares(game_display)
+    
+    # Always show the board
+    game.draw_squares(game_display)
 
     # Display grid
-    game_display.blit(grid,((display_width-grid_size)/2,(display_height-grid_size)/2))
+    game_display.blit(grid,(((display_width-grid_size)*6)/7,(display_height-grid_size)/2))
 
     # Flip the display
     pygame.display.flip()
