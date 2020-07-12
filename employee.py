@@ -5,11 +5,11 @@ class Emmployee():
         self.name = name
         self.order = order
         self.x_or_o = x_or_o
-        self.is_available = True
+        self.available = True
         self.rectangle = None
 
     def is_available(self):
-        return self.is_available
+        return self.available
 
     def set_rectangle(self, x, y, box_size):
         self.rectangle = pygame.Rect(x, y, box_size, box_size)

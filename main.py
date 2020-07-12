@@ -1,6 +1,7 @@
 import pygame
 import math
 from button import Button
+from sizes import Sizes
 from text import Text
 from game import Game
 
@@ -33,20 +34,7 @@ pygame.mixer.music.load("./media/hollywood_squares.mp3")
 # pygame.mixer.music.play(loops=-1)
 
 # Set constants
-info = pygame.display.Info()
-display_width = math.ceil((info.current_w*4)/5)
-display_height = math.ceil((info.current_h*4)/5)
-
-title_width = math.ceil((info.current_w * 3)/4)
-title_height = math.ceil((info.current_h * 3)/4)
-
-game_title_width = math.ceil((info.current_w * 3)/5)
-game_title_height = math.ceil((info.current_h)/8)
-
-grid_size = math.ceil((info.current_h * 1)/2)
-
-# Setup game object
-game = Game(display_width, display_height, grid_size)
+sizes = Sizes()
 
 # Colors
 black = (0,0,0)
@@ -58,25 +46,28 @@ white = (255,255,255)
 oswald_light_blue = (146,193,233)
 
 # Button initializations
-correct_button = Button(green, 50, display_height-150, 250, 100, 'CORRECT')
-incorrect_button = Button(red, display_width-300, display_height-150, 250, 100, 'INCORRECT')
+correct_button = Button(green, 50, sizes.display_height-150, 250, 100, 'CORRECT')
+incorrect_button = Button(red, sizes.display_width-300, sizes.display_height-150, 250, 100, 'INCORRECT')
 
 # Set up the drawing window
-game_display = pygame.display.set_mode((display_width,display_height))
+game_display = pygame.display.set_mode((sizes.display_width,sizes.display_height))
 pygame.display.set_caption('The Oswald Squares')
 
+# Setup game object
+game = Game(game_display, sizes)
+
 # Text initializations
-start_screen_message = Text('Press any key to continue!', game_display, display_width/2, display_height-30)
+start_screen_message = Text('Press any key to continue!', game_display, sizes.display_width/2, sizes.display_height-30)
 
 # Image manipulation
 start_title = pygame.image.load('./media/hollywood_title.png')
-start_title = pygame.transform.scale(start_title, (title_width,title_height))
+start_title = pygame.transform.scale(start_title, (sizes.title_width,sizes.title_height))
 
 game_title = pygame.image.load('./media/hollywood_title_horizontal.png')
-game_title = pygame.transform.scale(game_title, (game_title_width,game_title_height))
+game_title = pygame.transform.scale(game_title, (sizes.game_title_width,sizes.game_title_height))
 
 grid = pygame.image.load('./media/hs_grid.png')
-grid = pygame.transform.scale(grid, (grid_size,grid_size))
+grid = pygame.transform.scale(grid, (sizes.grid_size, sizes.grid_size))
 pygame.display.set_icon(grid) # Change Icon!
 
 ###################################### START SCREEN ############################################
@@ -93,7 +84,7 @@ while starting:
 
     # Start screen background and text
     game_display.fill(oswald_light_blue)
-    game_display.blit(start_title,((display_width-title_width)/2,(display_height-title_height)/2))
+    game_display.blit(start_title,((sizes.display_width-sizes.title_width)/2,(sizes.display_height-sizes.title_height)/2))
 
     # Display text at start screen
     start_screen_message.message_display()
@@ -133,7 +124,7 @@ while running:
 
     # Start screen background and text
     game_display.fill(oswald_light_blue)
-    game_display.blit(game_title,((display_width-game_title_width)/2,0))
+    game_display.blit(game_title,((sizes.display_width-sizes.game_title_width)/2,0))
 
     # If there's an active game
     if game.is_active():
@@ -142,9 +133,10 @@ while running:
     
     # Always show the board
     game.draw_squares(game_display)
+    game.display_all_messages()
 
     # Display grid
-    game_display.blit(grid,(((display_width-grid_size)*6)/7,(display_height-grid_size)/2))
+    game_display.blit(grid,((sizes.display_width-sizes.grid_size)*(sizes.grid_fraction),(sizes.display_height-sizes.grid_size)/2))
 
     # Flip the display
     pygame.display.flip()
