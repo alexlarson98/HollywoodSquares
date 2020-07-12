@@ -36,8 +36,13 @@ pygame.mixer.music.load("./media/hollywood_squares.mp3")
 info = pygame.display.Info()
 display_width = math.ceil((info.current_w*4)/5)
 display_height = math.ceil((info.current_h*4)/5)
+
 title_width = math.ceil((info.current_w * 3)/4)
 title_height = math.ceil((info.current_h * 3)/4)
+
+game_title_width = math.ceil((info.current_w * 3)/5)
+game_title_height = math.ceil((info.current_h)/8)
+
 grid_size = math.ceil((info.current_h * 1)/2)
 
 # Setup game object
@@ -56,19 +61,25 @@ oswald_light_blue = (146,193,233)
 correct_button = Button(green, 50, display_height-150, 250, 100, 'CORRECT')
 incorrect_button = Button(red, display_width-300, display_height-150, 250, 100, 'INCORRECT')
 
-# Text initializations
-font = Text('Testing one two three!')
-
 # Set up the drawing window
 game_display = pygame.display.set_mode((display_width,display_height))
 pygame.display.set_caption('The Oswald Squares')
 
+# Text initializations
+start_screen_message = Text('Press any key to continue!', game_display, display_width/2, display_height-30)
+
 # Image manipulation
-title = pygame.image.load('./media/hollywood_title.png')
-title = pygame.transform.scale(title, (title_width,title_height))
+start_title = pygame.image.load('./media/hollywood_title.png')
+start_title = pygame.transform.scale(start_title, (title_width,title_height))
+
+game_title = pygame.image.load('./media/hollywood_title_horizontal.png')
+game_title = pygame.transform.scale(game_title, (game_title_width,game_title_height))
+
 grid = pygame.image.load('./media/hs_grid.png')
 grid = pygame.transform.scale(grid, (grid_size,grid_size))
 pygame.display.set_icon(grid) # Change Icon!
+
+###################################### START SCREEN ############################################
 
 # Run start screen until the user asks to quit or start
 starting = True
@@ -76,19 +87,21 @@ running = False
 while starting:
     # Did the user click the window close button?
     for event in  pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == KEYDOWN:
             starting = False
             running = True
 
     # Start screen background and text
     game_display.fill(oswald_light_blue)
-    game_display.blit(title,((display_width-title_width)/2,(display_height-title_height)/2))
+    game_display.blit(start_title,((display_width-title_width)/2,(display_height-title_height)/2))
 
     # Display text at start screen
-    font.message_display(game_display, display_width, display_height)
+    start_screen_message.message_display()
 
     # Flip the display
     pygame.display.flip()
+
+######################################## START GAME ############################################
 
 # Run game until the user asks to quit
 while running:
@@ -120,6 +133,7 @@ while running:
 
     # Start screen background and text
     game_display.fill(oswald_light_blue)
+    game_display.blit(game_title,((display_width-game_title_width)/2,0))
 
     # If there's an active game
     if game.is_active():
@@ -134,5 +148,7 @@ while running:
 
     # Flip the display
     pygame.display.flip()
+
+################################################################################################
 
 pygame.quit()
