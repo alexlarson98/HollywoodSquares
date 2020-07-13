@@ -15,3 +15,8 @@ class Sizes():
 
         self.grid_size = math.ceil((info.current_h * 1)/2)
         self.grid_fraction = (6/7)
+        self.grid_increment = math.ceil(self.grid_size/3)
+
+        self.start_button_width = math.ceil((info.current_w * 1)/10)
+        self.start_button_height = math.ceil(self.start_button_width / 4)
+        

@@ -68,6 +68,7 @@ game_title = pygame.transform.scale(game_title, (sizes.game_title_width,sizes.ga
 
 grid = pygame.image.load('./media/hs_grid.png')
 grid = pygame.transform.scale(grid, (sizes.grid_size, sizes.grid_size))
+
 pygame.display.set_icon(grid) # Change Icon!
 
 ###################################### START SCREEN ############################################
@@ -93,7 +94,6 @@ while starting:
     pygame.display.flip()
 
 ######################################## START GAME ############################################
-
 # Run game until the user asks to quit
 while running:
 
@@ -107,7 +107,10 @@ while running:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
+                # Check employee grid
                 game.in_square(pos)
+                # Check if the game is being started
+                game.start(pos)
 
         elif event.type == pygame.MOUSEMOTION:
             if correct_button.isOver(pos):
@@ -126,13 +129,23 @@ while running:
     game_display.fill(oswald_light_blue)
     game_display.blit(game_title,((sizes.display_width-sizes.game_title_width)/2,0))
 
+    # Display host
+    game.display_host()
+
     # If there's an active game
     if game.is_active():
-        correct_button.draw(game_display)
-        incorrect_button.draw(game_display)
+        # correct_button.draw(game_display)
+        # incorrect_button.draw(game_display)
+        
+        if game.game_state == 2:
+            game.choose_contestant()
+    else:
+        game.display_start_button()
     
     # Always show the board
     game.draw_squares(game_display)
+
+    # Display messages
     game.display_all_messages()
 
     # Display grid
