@@ -45,10 +45,6 @@ dark_red = (128,0,0)
 white = (255,255,255)
 oswald_light_blue = (146,193,233)
 
-# Button initializations
-correct_button = Button(green, 50, sizes.display_height-150, 250, 100, 'CORRECT')
-incorrect_button = Button(red, sizes.display_width-300, sizes.display_height-150, 250, 100, 'INCORRECT')
-
 # Set up the drawing window
 game_display = pygame.display.set_mode((sizes.display_width,sizes.display_height))
 pygame.display.set_caption('The Oswald Squares')
@@ -107,20 +103,17 @@ while running:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                # Check employee grid
-                game.in_square(pos)
                 # Check if the game is being started
-                game.start(pos)
+                if not game.is_active():
+                    game.start(pos)
+                else:
+                    # Check employee grid
+                    game.in_square(pos)
+                    # Check buttons
+                    game.in_button(pos)
 
         elif event.type == pygame.MOUSEMOTION:
-            if correct_button.isOver(pos):
-                correct_button.color = dark_green
-            else:
-                correct_button.color = green
-            if incorrect_button.isOver(pos):
-                incorrect_button.color = dark_red
-            else:
-                incorrect_button.color = red
+            game.button_hover_check(pos)
 
         elif event.type == pygame.QUIT:
             running = False
@@ -134,13 +127,21 @@ while running:
 
     # If there's an active game
     if game.is_active():
-        # correct_button.draw(game_display)
-        # incorrect_button.draw(game_display)
-        
         if game.game_state == 2:
             game.choose_contestant()
+        if game.game_state == 3:
+            game.ask_question()
+            game.display_buttons()
+        if game.game_state == 4:
+            game.mark_grid()
+        if game.game_state == 5:
+            game.check_winner()
+        game.draw_x_and_o()
     else:
-        game.display_start_button()
+        if game.game_state == 1:
+            game.display_start_button()
+        if game.game_state == 6:
+            game.end()
     
     # Always show the board
     game.draw_squares(game_display)
@@ -150,6 +151,10 @@ while running:
 
     # Display grid
     game_display.blit(grid,((sizes.display_width-sizes.grid_size)*(sizes.grid_fraction),(sizes.display_height-sizes.grid_size)/2))
+
+    # Display all X's and O's
+    if game.is_active():
+        game.draw_x_and_o()
 
     # Flip the display
     pygame.display.flip()
