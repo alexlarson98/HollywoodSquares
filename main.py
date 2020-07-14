@@ -62,10 +62,7 @@ start_title = pygame.transform.scale(start_title, (sizes.title_width,sizes.title
 game_title = pygame.image.load('./media/hollywood_title_horizontal.png')
 game_title = pygame.transform.scale(game_title, (sizes.game_title_width,sizes.game_title_height))
 
-grid = pygame.image.load('./media/hs_grid.png')
-grid = pygame.transform.scale(grid, (sizes.grid_size, sizes.grid_size))
-
-pygame.display.set_icon(grid) # Change Icon!
+# pygame.display.set_icon(grid) # Change Icon!
 
 ###################################### START SCREEN ############################################
 
@@ -128,7 +125,7 @@ while running:
     # If there's an active game
     if game.is_active():
         if game.game_state == 2:
-            game.choose_contestant()
+            game.choose_celebrity()
         if game.game_state == 3:
             game.ask_question()
             game.display_buttons()
@@ -136,7 +133,6 @@ while running:
             game.mark_grid()
         if game.game_state == 5:
             game.check_winner()
-        game.draw_x_and_o()
     else:
         if game.game_state == 1:
             game.display_start_button()
@@ -149,12 +145,11 @@ while running:
     # Display messages
     game.display_all_messages()
 
-    # Display grid
-    game_display.blit(grid,((sizes.display_width-sizes.grid_size)*(sizes.grid_fraction),(sizes.display_height-sizes.grid_size)/2))
+    # Display Board
+    game.display_board()
 
     # Display all X's and O's
-    if game.is_active():
-        game.draw_x_and_o()
+    game.draw_x_and_o()
 
     # Flip the display
     pygame.display.flip()

@@ -21,6 +21,9 @@ class Emmployee():
         self.shape = pygame.image.load(img_url)
         self.shape = pygame.transform.scale(self.shape, (self.rectangle.width,self.rectangle.height))
 
+    def set_not_available(self):
+        self.available = False
+
     def set_rectangle(self, x, y, box_size):
         self.rectangle = pygame.Rect(x, y, box_size, box_size)
 

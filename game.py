@@ -1,21 +1,17 @@
 import pygame
 import math
 from text import Text
+from host import Host
+from grid import Grid
 from button import Button
 from employee import Emmployee
 
 START = 1
-CHOOSE_CONTESTANT = 2
+CHOOSE_CELEBRITY = 2
 ASK_QUESTION = 3
 MARK_GRID = 4
 CHECK_WINNER = 5
 END = 6
-
-HOST_STOP_LEFT = 0
-HOST_STOP_RIGHT = 1
-HOST_RIGHT = 2
-HOST_LEFT = 3
-
 
 class Game():
     def __init__(self, game_display, sizes):  
@@ -39,6 +35,9 @@ class Game():
         # Is a game currently active
         self.active_game = False
 
+        # Grid
+        self.grid = Grid(sizes)
+
         # Game state
         self.game_state = START
 
@@ -55,7 +54,8 @@ class Game():
         self.set_rectangles()
 
         # Set messages
-        self.annoouncer_message = Text('', game_display, (((self.sizes.display_width-self.sizes.grid_size) * self.sizes.grid_fraction))/2, self.sizes.game_title_height)
+        self.annoouncer_message = Text('', game_display, (((self.sizes.display_width-self.sizes.grid_size) * self.sizes.grid_fraction))/2, self.sizes.game_title_height+24)
+        self.annoouncer_warning = Text('', game_display, (((self.sizes.display_width-self.sizes.grid_size) * self.sizes.grid_fraction))/2, self.sizes.game_title_height, color=(255,0,0))
 
         # Colors
         self.black = (0,0,0)
@@ -65,12 +65,7 @@ class Game():
         self.dark_red = (128,0,0)
 
         # Set hosts
-        self.host_position = 0
-        self.host_move = HOST_RIGHT
-        self.host = pygame.image.load('./media/host.png')
-        self.host = pygame.transform.scale(self.host, (math.ceil(self.sizes.display_height/4),math.ceil(self.sizes.display_width/4)))
-        self.host_flip = pygame.image.load('./media/host_flip.png')
-        self.host_flip = pygame.transform.scale(self.host_flip, (math.ceil(self.sizes.display_height/4),math.ceil(self.sizes.display_width/4)))
+        self.host = Host(sizes, game_display)
 
         # Set start button
         self.start_button = pygame.image.load('./media/start_button.png')
@@ -95,6 +90,7 @@ class Game():
     def display_all_messages(self):
         # self.annoouncer_message.drawText()
         self.annoouncer_message.message_display()
+        self.annoouncer_warning.message_display()
 
     # Assign rectangle space for each employee in the game
     def set_rectangles(self):
@@ -142,22 +138,23 @@ class Game():
     def start(self, pos):
         if self.game_state == START:
             if self.start_button_rect.collidepoint(pos[0],pos[1]):
-                self.game_state = CHOOSE_CONTESTANT
+                self.game_state = CHOOSE_CELEBRITY
                 self.active_game = True
-                self.host_move_side()
+                self.host.host_move_side()
 
     # Check if position clicked is in an employee square
     def in_square(self, pos):
-        if self.game_state != CHOOSE_CONTESTANT:
+        if self.game_state != CHOOSE_CELEBRITY:
             return
         for employee in self.employees:
             if employee.rectangle.collidepoint(pos[0],pos[1]):
                 if self.check_valid(employee.name):
                     self.current_employee = employee
                     self.game_state = ASK_QUESTION
-                    return
+                    employee.set_not_available()
+                    self.annoouncer_warning.change_text('')
                 else:
-                    self.annoouncer_message.change_text('Please choose a different contestant! ' + employee.name + ' is not available.')
+                    self.annoouncer_warning.change_text(employee.name + ' is not available!')
 
     def in_button(self, pos):
         if self.game_state != ASK_QUESTION:
@@ -203,10 +200,11 @@ class Game():
     def is_active(self):
         return self.active_game
 
-    def choose_contestant(self):
+    def choose_celebrity(self):
         if not self.is_active():
             raise Exception('Error: Game is not active, so the game cannot be executed')
-        self.annoouncer_message.change_text(self.current_player + ', please choose an available contestant!')
+
+        self.annoouncer_message.change_text(self.current_player + ', please choose an available celebrity!')
 
     def ask_question(self):
         if not self.is_active():
@@ -223,6 +221,9 @@ class Game():
             self.game_state = CHECK_WINNER
         else:
             raise Exception('Error: cannot mark grid if a shape for the employee does not exist.')
+
+    def display_board(self):
+        self.grid.display_grid(self.game_display)
 
     def get_board(self):
         return [employee.x_or_o for employee in self.employees]
@@ -275,46 +276,14 @@ class Game():
         if self.winner:
             self.game_state = END
             self.active_game = False
+            self.annoouncer_message.change_text(self.winner + ' wins!')
         else:
             self.swap_current_player()
-            self.host_move_side()
-            self.game_state = CHOOSE_CONTESTANT
+            self.host.host_move_side()
+            self.game_state = CHOOSE_CELEBRITY
 
     def display_host(self):
-        if self.host_move > 1:
-            if self.host_move == HOST_RIGHT:
-                self.host_right()
-            else:
-                self.host_left()
-        else:
-            if self.host_move == HOST_STOP_RIGHT:
-                self.game_display.blit(self.host_flip,(590,(self.sizes.game_title_height)))
-            else:
-                self.game_display.blit(self.host,(0,(self.sizes.game_title_height)))
-
-    def host_right(self):
-        if self.host_position < 600:
-            self.game_display.blit(self.host,(self.host_position,(self.sizes.game_title_height)))
-            self.host_position += 10
-        else:
-            self.game_display.blit(self.host_flip,(590,(self.sizes.game_title_height))) # Change static '590'
-            self.host_move = HOST_STOP_RIGHT
-
-    def host_left(self):
-        if self.host_position > 0:
-            self.game_display.blit(self.host_flip,(self.host_position,(self.sizes.game_title_height)))
-            self.host_position -= 10
-        else:
-            self.game_display.blit(self.host,(0,(self.sizes.game_title_height)))
-            self.host_move = HOST_STOP_LEFT
-
-    def host_move_side(self):
-        if self.host_move == HOST_STOP_LEFT or self.host_move == HOST_LEFT:
-            self.host_move = HOST_RIGHT
-        elif self.host_move == HOST_STOP_RIGHT or self.host_move == HOST_RIGHT:
-            self.host_move = HOST_LEFT
-        else:
-            raise Exception('Error: Host is in an invalid move state.')
+        self.host.display_host()
 
     def draw_x_and_o(self):
         for employee in self.employees:
