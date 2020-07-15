@@ -38,11 +38,11 @@ class Host:
             self.host_move = HOST_STOP_RIGHT
 
     def host_left(self):
-        if self.host_position > 0:
+        if self.host_position > 10:
             self.game_display.blit(self.host_flip,(self.host_position,(self.sizes.game_title_height)))
             self.host_position -= 10
         else:
-            self.game_display.blit(self.host,(0,(self.sizes.game_title_height)))
+            self.game_display.blit(self.host,(10,(self.sizes.game_title_height)))
             self.host_move = HOST_STOP_LEFT
 
     def host_move_side(self):

@@ -1,6 +1,7 @@
 import pygame
 import math
 from button import Button
+from end_screen import EndScreen
 from sizes import Sizes
 from text import Text
 from game import Game
@@ -51,6 +52,9 @@ pygame.display.set_caption('The Oswald Squares')
 
 # Setup game object
 game = Game(game_display, sizes)
+
+# Setup end screen
+end_screen = EndScreen(game_display, sizes)
 
 # Text initializations
 start_screen_message = Text('Press any key to continue!', game_display, sizes.display_width/2, sizes.display_height-30)
@@ -136,8 +140,6 @@ while running:
     else:
         if game.game_state == 1:
             game.display_start_button()
-        if game.game_state == 6:
-            game.end()
     
     # Always show the board
     game.draw_squares(game_display)
@@ -150,6 +152,9 @@ while running:
 
     # Display all X's and O's
     game.draw_x_and_o()
+
+    if game.game_state == 6:
+        game.end()
 
     # Flip the display
     pygame.display.flip()

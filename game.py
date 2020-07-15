@@ -2,6 +2,8 @@ import pygame
 import math
 from text import Text
 from host import Host
+from end_screen import EndScreen
+from player import Player
 from grid import Grid
 from button import Button
 from employee import Emmployee
@@ -44,11 +46,18 @@ class Game():
         # Winner
         self.winner = None
 
+        # Initialize players in game
+        self.player_x = Player('./media/player_x.png', "Player X", sizes)
+        self.player_o = Player('./media/player_o.png', "Player O", sizes)
+
         # Discribes whether player x or player o is active
-        self.current_player = "Player X"
+        self.current_player = self.player_x
 
         # Currently selected employee
         self.current_employee = None
+
+        # End screen
+        self.end_screen = EndScreen(game_display, sizes)
 
         # Set location of employees to rectangles based on display
         self.set_rectangles()
@@ -160,29 +169,19 @@ class Game():
         if self.game_state != ASK_QUESTION:
             return
         if self.correct_button.isOver(pos):
-            if self.current_player == "Player X":
-                self.current_employee.x_or_o = "X"
-            elif self.current_player == "Player O":
-                self.current_employee.x_or_o = "O"
-            else:
-                raise Exception("Error: Invalid player type.")
+            self.current_employee.x_or_o = self.current_player.get_letter()
             self.game_state = MARK_GRID
 
         elif self.incorrect_button.isOver(pos):
-            if self.current_player == "Player X":
-                self.current_employee.x_or_o = "O"
-            elif self.current_player == "Player O":
-                self.current_employee.x_or_o = "X"
-            else:
-                raise Exception("Error: Invalid player type.")    
+            self.current_employee.x_or_o = self.current_player.get_opposite_letter()  
             self.game_state = MARK_GRID     
 
     # Swap current player
     def swap_current_player(self):
-        if self.current_player == "Player X":
-            self.current_player = "Player O"
+        if self.current_player == self.player_x:
+            self.current_player = self.player_o
         else:
-            self.current_player = "Player X"
+            self.current_player = self.player_x
 
     def center_from_grid_x(self, object_length):
         return ( ( (self.sizes.display_width-self.sizes.grid_size)*(self.sizes.grid_fraction) ) - object_length) / 2
@@ -204,7 +203,7 @@ class Game():
         if not self.is_active():
             raise Exception('Error: Game is not active, so the game cannot be executed')
 
-        self.annoouncer_message.change_text(self.current_player + ', please choose an available celebrity!')
+        self.annoouncer_message.change_text(self.current_player.name + ', please choose an available celebrity!')
 
     def ask_question(self):
         if not self.is_active():
@@ -233,38 +232,38 @@ class Game():
             horizontal = l[i:i+3]
             if len(set(horizontal)) == 1 and None not in horizontal:
                 if "X" in horizontal:
-                    self.winner = "Player X"
+                    self.winner = self.player_x
                 else:
-                    self.winner = "Player O"
+                    self.winner = self.player_o
 
     def check_vertical(self, l):
         for i in range(3):
             vertical = l[i::3]
             if len(set(vertical)) == 1 and None not in vertical:
                 if "X" in vertical:
-                    self.winner = "Player X"
+                    self.winner = self.player_x
                 else:
-                    self.winner = "Player O"
+                    self.winner = self.player_o
 
     def check_diagonal(self, l):
         diagonal = l[0::4]
         if len(set(diagonal)) == 1 and None not in diagonal:
             if "X" in diagonal:
-                self.winner = "Player X"
+                self.winner = self.player_x
             else:
-                self.winner = "Player O"
+                self.winner = self.player_o
         diagonal = l[2::2][0:3]
         if len(set(diagonal)) == 1 and None not in diagonal:
             if "X" in diagonal:
-                self.winner = "Player X"
+                self.winner = self.player_x
             else:
-                self.winner = "Player O"
+                self.winner = self.player_o
 
     def check_five(self, board):
         if board.count('X') >= 5:
-            self.winner = "Player X"
+            self.winner = self.player_x
         if board.count('O') >= 5:
-            self.winner = "Player O"
+            self.winner = self.player_o
 
     def check_winner(self):
         board = self.get_board()
@@ -276,7 +275,8 @@ class Game():
         if self.winner:
             self.game_state = END
             self.active_game = False
-            self.annoouncer_message.change_text(self.winner + ' wins!')
+            self.annoouncer_message.change_text(self.winner.name + ' wins!')
+            self.end_screen.set_winner(self.winner)
         else:
             self.swap_current_player()
             self.host.host_move_side()
@@ -293,4 +293,5 @@ class Game():
     def end(self):
         self.current_employee = None
         self.winner = None
+        self.end_screen.end_game()
         
