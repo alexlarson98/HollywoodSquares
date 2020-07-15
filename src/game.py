@@ -47,8 +47,8 @@ class Game():
         self.winner = None
 
         # Initialize players in game
-        self.player_x = Player('./media/player_x.png', "Player X", sizes)
-        self.player_o = Player('./media/player_o.png', "Player O", sizes)
+        self.player_x = Player('./media/kayla_rice.jpg', "Player X", sizes)
+        self.player_o = Player('./media/steve_carey.jpg', "Player O", sizes)
 
         # Discribes whether player x or player o is active
         self.current_player = self.player_x
@@ -209,6 +209,7 @@ class Game():
         if not self.is_active():
             raise Exception('Error: Game is not active, so the game cannot be executed')
         self.annoouncer_message.change_text('Question for ' + self.current_employee.name +':')
+        self.grid.set_player_index(self.current_employee.order)
 
     # Called after 'CORRECT' or 'INCORRECT' button is clicked by user
     def mark_grid(self):
@@ -271,6 +272,7 @@ class Game():
         self.check_vertical(board)
         self.check_horizontal(board)
         self.check_diagonal(board)
+        self.grid.reset_player_index()
 
         if self.winner:
             self.game_state = END
