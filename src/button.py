@@ -1,23 +1,20 @@
 import pygame
 
 class Button():
-    def __init__(self, color, x,y,width,height, text=''):
+    def __init__(self, color, x,y,width,height, text,text_size):
         self.color = color
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.text = text
+        self.text_size = text_size
 
-    def draw(self,display,outline=None):
-        #Call this method to draw the button on the screen
-        if outline:
-            pygame.draw.rect(display, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)
-            
+    def draw(self,display):
         pygame.draw.rect(display, self.color, (self.x,self.y,self.width,self.height),0)
         
         if self.text != '':
-            font = pygame.font.SysFont('comicsans', 60)
+            font = pygame.font.SysFont('comicsans', self.text_size)
             text = font.render(self.text, 1, (255,255,255))
             display.blit(text, (self.x + (self.width/2 - text.get_width()/2), self.y + (self.height/2 - text.get_height()/2)))
 

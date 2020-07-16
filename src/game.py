@@ -82,14 +82,9 @@ class Game():
         self.start_button = pygame.transform.scale(self.start_button, (self.sizes.start_button_width, self.sizes.start_button_height))
         self.start_button_rect = pygame.Rect(self.center_from_grid_x(self.sizes.start_button_width), self.sizes.game_title_height + self.sizes.start_button_height, self.sizes.start_button_width, self.sizes.start_button_height)
 
-        # Set start button
-        self.start_button = pygame.image.load('./media/start_button.png')
-        self.start_button = pygame.transform.scale(self.start_button, (self.sizes.start_button_width, self.sizes.start_button_height))
-        self.start_button_rect = pygame.Rect(self.center_from_grid_x(self.sizes.start_button_width), self.sizes.game_title_height + self.sizes.start_button_height, self.sizes.start_button_width, self.sizes.start_button_height)
-
         # Button initializations
-        self.correct_button = Button(self.green, 50, sizes.display_height-150, 250, 100, 'CORRECT')
-        self.incorrect_button = Button(self.red, sizes.display_width-300, sizes.display_height-150, 250, 100, 'INCORRECT')
+        self.correct_button = Button(self.green, self.left_from_grid_x(), sizes.display_height-self.sizes.start_button_height-self.sizes.buffer_width, self.sizes.start_button_width, self.sizes.start_button_height, 'CORRECT', self.sizes.text_size*3)
+        self.incorrect_button = Button(self.red, self.right_from_grid_x(self.sizes.start_button_width), sizes.display_height-self.sizes.start_button_height-self.sizes.buffer_width, self.sizes.start_button_width, self.sizes.start_button_height, 'INCORRECT', self.sizes.text_size*3)
 
     def display_start_button(self):
         if self.game_state != START:
@@ -186,6 +181,12 @@ class Game():
 
     def center_from_grid_x(self, object_length):
         return ( ( (self.sizes.display_width-self.sizes.grid_size)*(self.sizes.grid_fraction) ) - object_length) / 2
+
+    def right_from_grid_x(self, object_length):
+        return ( ( (self.sizes.display_width-self.sizes.grid_size)*(self.sizes.grid_fraction) ) - object_length) - self.sizes.buffer_width
+
+    def left_from_grid_x(self):
+        return self.sizes.buffer_width
 
     # Check if player clicked is available
     def check_valid(self, name):
