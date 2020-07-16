@@ -8,15 +8,22 @@ HOST_LEFT = 3
 HOST_SPEED = 15
 
 class Host:
-    def __init__(self, sizes, game_display):
+    def __init__(self, sizes, game_display, maximum):
         self.sizes = sizes
         self.game_display = game_display
+
+        self.width = math.ceil(self.sizes.display_height/4)
+        self.height = math.ceil(self.sizes.display_width/4)
+
         self.host_position = 0
+        self.host_position_min = sizes.buffer_width
+        self.host_position_max = maximum - self.width - sizes.buffer_width
         self.host_move = HOST_RIGHT
-        self.host = pygame.image.load('./media/host.png')
-        self.host = pygame.transform.scale(self.host, (math.ceil(self.sizes.display_height/4),math.ceil(self.sizes.display_width/4)))
-        self.host_flip = pygame.image.load('./media/host_flip.png')
-        self.host_flip = pygame.transform.scale(self.host_flip, (math.ceil(self.sizes.display_height/4),math.ceil(self.sizes.display_width/4)))
+
+        self.host = pygame.image.load('./media/cathy.png')
+        self.host = pygame.transform.scale(self.host, (self.width, self.height))
+        self.host_flip = pygame.image.load('./media/cathy_flip.png')
+        self.host_flip = pygame.transform.scale(self.host_flip, (self.width, self.height))
 
     def display_host(self):
         if self.host_move > 1:
@@ -26,24 +33,24 @@ class Host:
                 self.host_left()
         else:
             if self.host_move == HOST_STOP_RIGHT:
-                self.game_display.blit(self.host_flip,(590,(self.sizes.game_title_height)))
+                self.game_display.blit(self.host_flip,(self.host_position_max,(self.sizes.game_title_height)))
             else:
-                self.game_display.blit(self.host,(0,(self.sizes.game_title_height)))
+                self.game_display.blit(self.host,(self.host_position_min,(self.sizes.game_title_height)))
 
     def host_right(self):
-        if self.host_position < 600:
-            self.game_display.blit(self.host,(self.host_position,(self.sizes.game_title_height)))
+        if self.host_position < self.host_position_max:
+            self.game_display.blit(self.host,(self.host_position, (self.sizes.game_title_height)))
             self.host_position += HOST_SPEED
         else:
-            self.game_display.blit(self.host_flip,(590,(self.sizes.game_title_height))) # Change static '590'
+            self.game_display.blit(self.host_flip,(self.host_position_max,(self.sizes.game_title_height)))
             self.host_move = HOST_STOP_RIGHT
 
     def host_left(self):
-        if self.host_position > HOST_SPEED:
+        if self.host_position > self.host_position_min:
             self.game_display.blit(self.host_flip,(self.host_position,(self.sizes.game_title_height)))
             self.host_position -= HOST_SPEED
         else:
-            self.game_display.blit(self.host,(0,(self.sizes.game_title_height)))
+            self.game_display.blit(self.host,(self.host_position_min,(self.sizes.game_title_height)))
             self.host_move = HOST_STOP_LEFT
 
     def host_move_side(self):

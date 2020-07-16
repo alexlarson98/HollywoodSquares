@@ -57,7 +57,7 @@ game = Game(game_display, sizes)
 end_screen = EndScreen(game_display, sizes)
 
 # Text initializations
-start_screen_message = Text('Press any key to continue!', game_display, sizes.display_width/2, sizes.display_height-30)
+start_screen_message = Text('PRESS ANY KEY TO START!', 2*sizes.text_size, game_display, sizes.display_width/2, sizes.display_height-(2*sizes.text_size), blink=True)
 
 # Image manipulation
 start_title = pygame.image.load('./media/hollywood_title.png')

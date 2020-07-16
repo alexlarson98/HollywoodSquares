@@ -63,8 +63,9 @@ class Game():
         self.set_rectangles()
 
         # Set messages
-        self.annoouncer_message = Text('', game_display, (((self.sizes.display_width-self.sizes.grid_size) * self.sizes.grid_fraction))/2, self.sizes.game_title_height+24)
-        self.annoouncer_warning = Text('', game_display, (((self.sizes.display_width-self.sizes.grid_size) * self.sizes.grid_fraction))/2, self.sizes.game_title_height, color=(255,0,0))
+        self.player_name_message = Text('', 2*sizes.text_size, game_display, (((self.sizes.display_width-self.sizes.grid_size) * self.sizes.grid_fraction))/2, self.sizes.game_title_height+sizes.text_size)
+        self.announcer_message = Text('', 2*sizes.text_size, game_display, (((self.sizes.display_width-self.sizes.grid_size) * self.sizes.grid_fraction))/2, self.sizes.game_title_height+(sizes.text_size*4))
+        self.announcer_warning = Text('', 2*sizes.text_size, game_display, (((self.sizes.display_width-self.sizes.grid_size) * self.sizes.grid_fraction))/2, self.sizes.game_title_height+(sizes.text_size*7), color=(255,0,0))
 
         # Colors
         self.black = (0,0,0)
@@ -74,7 +75,7 @@ class Game():
         self.dark_red = (128,0,0)
 
         # Set hosts
-        self.host = Host(sizes, game_display)
+        self.host = Host(sizes, game_display, self.grid.get_width())
 
         # Set start button
         self.start_button = pygame.image.load('./media/start_button.png')
@@ -97,9 +98,9 @@ class Game():
 
     # Display all messages for game
     def display_all_messages(self):
-        # self.annoouncer_message.drawText()
-        self.annoouncer_message.message_display()
-        self.annoouncer_warning.message_display()
+        self.player_name_message.message_display()
+        self.announcer_message.message_display()
+        self.announcer_warning.message_display()
 
     # Assign rectangle space for each employee in the game
     def set_rectangles(self):
@@ -161,9 +162,9 @@ class Game():
                     self.current_employee = employee
                     self.game_state = ASK_QUESTION
                     employee.set_not_available()
-                    self.annoouncer_warning.change_text('')
+                    self.announcer_warning.change_text('')
                 else:
-                    self.annoouncer_warning.change_text(employee.name + ' is not available!')
+                    self.announcer_warning.change_text(employee.name + ' is not available!')
 
     def in_button(self, pos):
         if self.game_state != ASK_QUESTION:
@@ -203,12 +204,13 @@ class Game():
         if not self.is_active():
             raise Exception('Error: Game is not active, so the game cannot be executed')
 
-        self.annoouncer_message.change_text(self.current_player.name + ', please choose an available celebrity!')
+        self.player_name_message.change_text(self.current_player.name + ':')
+        self.announcer_message.change_text('Pick a celebrity!')
 
     def ask_question(self):
         if not self.is_active():
             raise Exception('Error: Game is not active, so the game cannot be executed')
-        self.annoouncer_message.change_text('Question for ' + self.current_employee.name +':')
+        self.announcer_message.change_text('Question for ' + self.current_employee.name +':')
         self.grid.set_player_index(self.current_employee.order)
 
     # Called after 'CORRECT' or 'INCORRECT' button is clicked by user
@@ -268,16 +270,19 @@ class Game():
 
     def check_winner(self):
         board = self.get_board()
-        self.check_five(board)
         self.check_vertical(board)
         self.check_horizontal(board)
         self.check_diagonal(board)
         self.grid.reset_player_index()
 
+        # Check 5 marks last
+        if not self.winner:
+            self.check_five(board)
+
         if self.winner:
             self.game_state = END
             self.active_game = False
-            self.annoouncer_message.change_text(self.winner.name + ' wins!')
+            self.announcer_message.change_text(self.winner.name + ' wins!')
             self.end_screen.set_winner(self.winner)
         else:
             self.swap_current_player()
