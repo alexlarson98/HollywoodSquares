@@ -18,7 +18,9 @@ class Host:
         self.host_position = 0
         self.host_position_min = sizes.buffer_width
         self.host_position_max = maximum - self.width - sizes.buffer_width
-        self.host_move = HOST_RIGHT
+
+        # Start position
+        self.host_move = HOST_STOP_LEFT
 
         self.host = pygame.image.load('./media/cathy.png')
         self.host = pygame.transform.scale(self.host, (self.width, self.height))

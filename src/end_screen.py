@@ -1,6 +1,7 @@
 import pygame
 import math
 from player import Player
+from text import Text
 
 class EndScreen:
     def __init__(self, game_display, sizes):
@@ -10,7 +11,10 @@ class EndScreen:
         self.surface = pygame.Surface((sizes.display_width, sizes.display_height))
         self.oswald_light_blue = (146,193,233)
         self.fade_finished = False
+
         self.winner = None
+        self.winning_message = Text('', sizes.text_size*8,game_display,sizes.display_width/2,sizes.display_height-sizes.text_size*8)
+        self.new_game_message = Text('PRESS ANY KEY TO START A NEW GAME!', 2*sizes.text_size, game_display, sizes.display_width/2, sizes.display_height-(2*sizes.text_size), blink=True)
 
         self.crown_width = math.ceil(sizes.display_width/5)
         self.crown_height = math.ceil(sizes.display_width/5)
@@ -40,6 +44,8 @@ class EndScreen:
     def display_winner(self):
         self.game_display.blit(self.winner.player_img, (self.center_player_on_screen()))
         self.game_display.blit(self.crown, (self.put_crown_on()))
+        self.winning_message.message_display()
+        self.new_game_message.message_display()
 
     def center_player_on_screen(self):
         width = math.ceil((self.sizes.display_width-self.winner.width)/2)
@@ -53,3 +59,4 @@ class EndScreen:
 
     def set_winner(self, winner):
         self.winner = winner
+        self.winning_message.change_text(winner.name + " wins!")

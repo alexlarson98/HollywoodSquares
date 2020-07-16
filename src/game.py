@@ -16,7 +16,7 @@ CHECK_WINNER = 5
 END = 6
 
 class Game():
-    def __init__(self, game_display, sizes):  
+    def __init__(self, game_display, sizes, first_player):  
         # Game metrics
         self.sizes = sizes
         self.game_display = game_display
@@ -49,9 +49,10 @@ class Game():
         # Initialize players in game
         self.player_x = Player('./media/kayla_rice.jpg', "Player X", sizes)
         self.player_o = Player('./media/steve_carey.jpg', "Player O", sizes)
+        self.players = [self.player_x, self.player_o]
 
         # Discribes whether player x or player o is active
-        self.current_player = self.player_x
+        self.current_player = self.players[first_player]
 
         # Currently selected employee
         self.current_employee = None
@@ -140,12 +141,12 @@ class Game():
         self.correct_button.draw(self.game_display)
         self.incorrect_button.draw(self.game_display)
 
-    def start(self, pos):
+    def start(self):
         if self.game_state == START:
-            if self.start_button_rect.collidepoint(pos[0],pos[1]):
-                self.game_state = CHOOSE_CELEBRITY
-                self.active_game = True
-                self.host.host_move_side()
+            # if self.start_button_rect.collidepoint(pos[0],pos[1]):
+            self.game_state = CHOOSE_CELEBRITY
+            self.active_game = True
+            # self.host.host_move_side()
 
     # Check if position clicked is in an employee square
     def in_square(self, pos):
@@ -282,7 +283,7 @@ class Game():
 
         if self.winner:
             self.game_state = END
-            self.active_game = False
+            # self.active_game = False
             self.announcer_message.change_text(self.winner.name + ' wins!')
             self.end_screen.set_winner(self.winner)
         else:

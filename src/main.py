@@ -46,12 +46,15 @@ dark_red = (128,0,0)
 white = (255,255,255)
 oswald_light_blue = (146,193,233)
 
+# Starting player index
+first_player = 0
+
 # Set up the drawing window
 game_display = pygame.display.set_mode((sizes.display_width,sizes.display_height))
 pygame.display.set_caption('The Oswald Squares')
 
 # Setup game object
-game = Game(game_display, sizes)
+game = Game(game_display, sizes, first_player)
 
 # Setup end screen
 end_screen = EndScreen(game_display, sizes)
@@ -90,6 +93,8 @@ while starting:
     # Flip the display
     pygame.display.flip()
 
+game.start()
+
 ######################################## START GAME ############################################
 # Run game until the user asks to quit
 while running:
@@ -101,17 +106,20 @@ while running:
         if event.type == KEYDOWN:
             if event.key == K_ESCAPE:
                 running = False
+            elif game.game_state == 6:
+                if not first_player:
+                    first_player = 1
+                else:
+                    first_player = 0
+                game = Game(game_display, sizes, first_player)
+                game.start()
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
-                # Check if the game is being started
-                if not game.is_active():
-                    game.start(pos)
-                else:
-                    # Check employee grid
-                    game.in_square(pos)
-                    # Check buttons
-                    game.in_button(pos)
+                # Check employee grid
+                game.in_square(pos)
+                # Check buttons
+                game.in_button(pos)
 
         elif event.type == pygame.MOUSEMOTION:
             game.button_hover_check(pos)
@@ -127,6 +135,7 @@ while running:
     game.display_host()
 
     # If there's an active game
+    print(game.game_state)
     if game.is_active():
         if game.game_state == 2:
             game.choose_celebrity()
@@ -137,9 +146,6 @@ while running:
             game.mark_grid()
         if game.game_state == 5:
             game.check_winner()
-    else:
-        if game.game_state == 1:
-            game.display_start_button()
     
     # Always show the board
     game.draw_squares(game_display)
