@@ -47,8 +47,8 @@ class Game():
         self.winner = None
 
         # Initialize players in game
-        self.player_x = Player('./media/kayla_rice.jpg', "Player X", sizes)
-        self.player_o = Player('./media/steve_carey.jpg', "Player O", sizes)
+        self.player_x = Player('./media/steve_carey.jpg', "Player X", sizes)
+        self.player_o = Player('./media/kayla_rice.jpg', "Player O", sizes)
         self.players = [self.player_x, self.player_o]
 
         # Discribes whether player x or player o is active
@@ -168,10 +168,12 @@ class Game():
         if self.correct_button.isOver(pos):
             self.current_employee.x_or_o = self.current_player.get_letter()
             self.game_state = MARK_GRID
+            print('right')
 
         elif self.incorrect_button.isOver(pos):
             self.current_employee.x_or_o = self.current_player.get_opposite_letter()  
-            self.game_state = MARK_GRID     
+            self.game_state = MARK_GRID
+            print('wrong')  
 
     # Swap current player
     def swap_current_player(self):

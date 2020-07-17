@@ -4,8 +4,8 @@ import math
 class Sizes():
     def __init__(self):
         info = pygame.display.Info()
-        self.display_width = math.ceil((info.current_w*5)/7)
-        self.display_height = math.ceil((info.current_h*5)/7)
+        self.display_width = info.current_w
+        self.display_height = info.current_h
 
         self.text_size = math.ceil((self.display_height*2)/100)
 

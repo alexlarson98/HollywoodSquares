@@ -32,7 +32,7 @@ clock = pygame.time.Clock()
 
 # Play loading music
 pygame.mixer.music.load("./media/hollywood_squares.mp3")
-# pygame.mixer.music.play(loops=-1)
+pygame.mixer.music.play(loops=-1)
 
 # Set constants
 sizes = Sizes()
@@ -50,7 +50,7 @@ oswald_light_blue = (146,193,233)
 first_player = 0
 
 # Set up the drawing window
-game_display = pygame.display.set_mode((sizes.display_width,sizes.display_height))
+game_display = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 pygame.display.set_caption('The Oswald Squares')
 
 # Setup game object
@@ -94,6 +94,7 @@ while starting:
     pygame.display.flip()
 
 game.start()
+pygame.mixer.music.fadeout(4000)
 
 ######################################## START GAME ############################################
 # Run game until the user asks to quit
@@ -135,7 +136,6 @@ while running:
     game.display_host()
 
     # If there's an active game
-    print(game.game_state)
     if game.is_active():
         if game.game_state == 2:
             game.choose_celebrity()
