@@ -3,10 +3,11 @@ import math
 from text import Text
 from host import Host
 from end_screen import EndScreen
+from secret_square import SecretSquare
 from player import Player
 from grid import Grid
 from button import Button
-from employee import Emmployee
+from employee import Employee
 from sound_effect_queue import SoundEffectQueue
 
 START = 1
@@ -24,23 +25,23 @@ class Game():
 
         # Initialize employees aactive in the game
         self.employees = [
-            Emmployee('Ann', 0),
-            Emmployee('Wanda', 1),
-            Emmployee('Susan', 2),
-            Emmployee('Nick', 3),
-            Emmployee('Donna', 4),
-            Emmployee('Tiffany', 5),
-            Emmployee('Sara R.', 6),
-            Emmployee('Brendan', 7),
-            Emmployee('Sarah L.', 8),
+            Employee('Ann', 0),
+            Employee('Wanda', 1),
+            Employee('Susan', 2),
+            Employee('Nick', 3),
+            Employee('Donna', 4),
+            Employee('Tiffany', 5),
+            Employee('Sara R.', 6),
+            Employee('Brendan', 7),
+            Employee('Sarah L.', 8),
         ]
 
         # Is a game currently active
         self.active_game = False
 
         # Sound effects
-        self.correct_sfx = SoundEffectQueue('./media/sfx/', 'correct', 3)
-        self.wrong_sfx = SoundEffectQueue('./media/sfx/', 'wrong', 4)
+        self.correct_sfx = SoundEffectQueue('./media/sfx/', 'right', 3)
+        self.wrong_sfx = SoundEffectQueue('./media/sfx/', 'wrong', 3)
 
         # Grid
         self.grid = Grid(sizes)
@@ -79,6 +80,12 @@ class Game():
         self.dark_green = (0,75,0)
         self.red = (255,0,0)
         self.dark_red = (128,0,0)
+
+        # Secret square init
+        self.secret_square = SecretSquare(sizes, game_display)
+
+        # Displaying gift card for secret square
+        self.display_gift_card = False
 
         # Set hosts
         self.host = Host(sizes, game_display, self.grid.get_width())
@@ -164,8 +171,14 @@ class Game():
                     self.game_state = ASK_QUESTION
                     employee.set_not_available()
                     self.announcer_warning.change_text('')
+                    if self.secret_square.is_secret_square(employee, self.current_player.name):
+                        self.display_gift_card = True
                 else:
                     self.announcer_warning.change_text(employee.name + ' is not available!')
+
+    def gift_card_check(self):
+        if self.display_gift_card:
+            self.display_gift_card = False
 
     def in_button(self, pos):
         if self.game_state != ASK_QUESTION:
@@ -221,9 +234,12 @@ class Game():
             raise Exception('Error: Game is not active, so the game cannot be executed')
         self.announcer_message.change_text('Question for ' + self.current_employee.name +':')
         self.grid.set_player_index(self.current_employee.order)
+        if self.display_gift_card:
+            self.secret_square.display_gift_card()
 
     # Called after 'CORRECT' or 'INCORRECT' button is clicked by user
     def mark_grid(self):
+        self.display_gift_card = False
         if self.current_employee.x_or_o == "X":
             self.current_employee.set_shape('./media/x.png')
             self.game_state = CHECK_WINNER

@@ -1,6 +1,6 @@
 import pygame
 
-class Emmployee():
+class Employee():
     def __init__(self, name, order, x_or_o=None):
         self.name = name
         self.order = order
