@@ -108,6 +108,7 @@ while running:
             if event.key == K_ESCAPE:
                 running = False
             elif game.game_state == 6:
+                pygame.mixer.music.fadeout(4000)
                 if not first_player:
                     first_player = 1
                 else:

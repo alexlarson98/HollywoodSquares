@@ -21,11 +21,15 @@ class EndScreen:
 
         self.crown = pygame.image.load('./media/crown.png')
         self.crown = pygame.transform.scale(self.crown, (self.crown_width, self.crown_height))
+
+        self.music = False
     
     def end_game(self):
-        # if not self.fade_finished:
+        if not self.music:
+            pygame.mixer.music.load("./media/sfx/hollywood_squares.mp3")
+            pygame.mixer.music.play(loops=-1)
+            self.music = True
         self.fade_out()
-        # else:
         if self.winner and self.fade_finished:
             self.display_winner()
         if not self.winner:
@@ -33,9 +37,7 @@ class EndScreen:
 
     def fade_out(self):
         if self.counter >= 256:
-            # self.counter = 0
             self.fade_finished = True
-        # else:
         self.surface.set_alpha(self.counter)
         self.surface.fill(self.oswald_light_blue)
         self.game_display.blit(self.surface, (0,0))
