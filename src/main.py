@@ -31,8 +31,8 @@ pygame.init()
 clock = pygame.time.Clock()
 
 # Play loading music
-game_show_music = pygame.mixer.music.load("./media/hollywood_squares.mp3")
-game_show_music.play(loops=-1)
+pygame.mixer.music.load("./media/sfx/hollywood_squares.mp3")
+pygame.mixer.music.play(loops=-1)
 
 # Set constants
 sizes = Sizes()
@@ -94,7 +94,7 @@ while starting:
     pygame.display.flip()
 
 game.start()
-game_show_music.fadeout(4000)
+pygame.mixer.music.fadeout(4000)
 
 ######################################## START GAME ############################################
 # Run game until the user asks to quit

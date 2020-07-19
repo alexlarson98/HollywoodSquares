@@ -39,7 +39,8 @@ class Game():
         self.active_game = False
 
         # Sound effects
-        self.sfx = SoundEffectQueue('./media/', 4)
+        self.correct_sfx = SoundEffectQueue('./media/sfx/', 'correct', 3)
+        self.wrong_sfx = SoundEffectQueue('./media/sfx/', 'wrong', 4)
 
         # Grid
         self.grid = Grid(sizes)
@@ -172,12 +173,12 @@ class Game():
         if self.correct_button.isOver(pos):
             self.current_employee.x_or_o = self.current_player.get_letter()
             self.game_state = MARK_GRID
-            print('right')
+            self.correct_sfx.play()
 
         elif self.incorrect_button.isOver(pos):
             self.current_employee.x_or_o = self.current_player.get_opposite_letter()  
             self.game_state = MARK_GRID
-            print('wrong')  
+            self.wrong_sfx.play()
 
     # Swap current player
     def swap_current_player(self):
