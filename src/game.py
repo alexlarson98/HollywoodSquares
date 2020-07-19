@@ -7,6 +7,7 @@ from player import Player
 from grid import Grid
 from button import Button
 from employee import Emmployee
+from sound_effect_queue import SoundEffectQueue
 
 START = 1
 CHOOSE_CELEBRITY = 2
@@ -36,6 +37,9 @@ class Game():
 
         # Is a game currently active
         self.active_game = False
+
+        # Sound effects
+        self.sfx = SoundEffectQueue('./media/', 4)
 
         # Grid
         self.grid = Grid(sizes)

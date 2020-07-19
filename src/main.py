@@ -31,8 +31,8 @@ pygame.init()
 clock = pygame.time.Clock()
 
 # Play loading music
-pygame.mixer.music.load("./media/hollywood_squares.mp3")
-pygame.mixer.music.play(loops=-1)
+game_show_music = pygame.mixer.music.load("./media/hollywood_squares.mp3")
+game_show_music.play(loops=-1)
 
 # Set constants
 sizes = Sizes()
@@ -50,7 +50,7 @@ oswald_light_blue = (146,193,233)
 first_player = 0
 
 # Set up the drawing window
-game_display = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+game_display = pygame.display.set_mode([sizes.display_width, sizes.display_height])
 pygame.display.set_caption('The Oswald Squares')
 
 # Setup game object
@@ -94,7 +94,7 @@ while starting:
     pygame.display.flip()
 
 game.start()
-pygame.mixer.music.fadeout(4000)
+game_show_music.fadeout(4000)
 
 ######################################## START GAME ############################################
 # Run game until the user asks to quit
